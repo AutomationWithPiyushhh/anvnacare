@@ -76,9 +76,6 @@ if (isset($_SESSION['user_id'])) {
                 <!-- Nav Links -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link px-3 fw-medium" href="index.php" id="navHome" data-testid="nav-home">Home</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link px-3 fw-medium" href="medicines.php" id="navPharmacy" data-testid="nav-pharmacy">Pharmacy</a>
                     </li>
                     <li class="nav-item">
