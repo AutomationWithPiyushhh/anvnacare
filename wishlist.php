@@ -13,12 +13,12 @@ $userId = $_SESSION['user_id'];
 try {
     // UNION SQL to get both medicines and products in a single list
     $stmt = $pdo->prepare("
-        SELECT w.id as wishlist_id, w.item_type, w.item_id, m.name, m.discount_price, m.mrp, m.rating, m.manufacturer, m.stock, m.category
+        SELECT w.id as wishlist_id, w.item_type, w.item_id, m.name, m.discount_price, m.mrp, m.rating, m.manufacturer, m.stock, m.category, m.image
         FROM wishlist w
         JOIN medicines m ON w.item_id = m.id AND w.item_type = 'medicine'
         WHERE w.user_id = ?
         UNION
-        SELECT w.id as wishlist_id, w.item_type, w.item_id, p.name, p.discount_price, p.mrp, p.rating, 'Health Store' as manufacturer, p.stock, p.category
+        SELECT w.id as wishlist_id, w.item_type, w.item_id, p.name, p.discount_price, p.mrp, p.rating, 'Health Store' as manufacturer, p.stock, p.category, p.image
         FROM wishlist w
         JOIN products p ON w.item_id = p.id AND w.item_type = 'product'
         WHERE w.user_id = ?
@@ -56,6 +56,18 @@ try {
                 $discountPercentage = round((($item['mrp'] - $item['discount_price']) / $item['mrp']) * 100); 
                 $itemId = $item['item_id'];
                 $itemType = $item['item_type'];
+                
+                $imgSrc = 'assets/images/categories/' . strtolower($item['category']) . '.png';
+                if (!empty($item['image'])) {
+                    if (file_exists(__DIR__ . '/' . $item['image'])) {
+                        $imgSrc = $item['image'];
+                    } else {
+                        $svgPath = str_replace('.png', '.svg', $item['image']);
+                        if (file_exists(__DIR__ . '/' . $svgPath)) {
+                            $imgSrc = $svgPath;
+                        }
+                    }
+                }
                 ?>
                 <div class="col-sm-6 col-md-4 col-lg-3" id="wishlist-item-card-<?= $item['wishlist_id'] ?>" data-testid="wishlist-card">
                     <div class="card glass-card h-100 p-3 border-0">
@@ -63,7 +75,7 @@ try {
                         <div class="position-relative text-center mb-3">
                             <span class="position-absolute top-0 start-0 badge bg-danger"><?= $discountPercentage ?>% OFF</span>
                             <span class="position-absolute top-0 end-0 badge bg-light text-dark border capitalize" style="text-transform: capitalize;"><?= $itemType ?></span>
-                            <img src="assets/images/categories/<?= strtolower($item['category']) ?>.png" class="img-fluid rounded" alt="<?= htmlspecialchars($item['name']) ?>" style="height: 140px; object-fit: contain;">
+                            <img src="<?= htmlspecialchars($imgSrc) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($item['name']) ?>" style="height: 140px; object-fit: contain;">
                         </div>
 
                         <!-- Details -->
