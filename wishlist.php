@@ -71,11 +71,10 @@ try {
                 ?>
                 <div class="col-sm-6 col-md-4 col-lg-3" id="wishlist-item-card-<?= $item['wishlist_id'] ?>" data-testid="wishlist-card">
                     <div class="card glass-card h-100 p-3 border-0">
-                        <!-- Image and type badge -->
-                        <div class="position-relative text-center mb-3">
-                            <span class="position-absolute top-0 start-0 badge bg-danger"><?= $discountPercentage ?>% OFF</span>
-                            <span class="position-absolute top-0 end-0 badge bg-light text-dark border capitalize" style="text-transform: capitalize;"><?= $itemType ?></span>
-                            <img src="<?= htmlspecialchars($imgSrc) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($item['name']) ?>" style="height: 140px; object-fit: contain;">
+                        <!-- Badges -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-danger"><?= $discountPercentage ?>% OFF</span>
+                            <span class="badge bg-light text-dark border capitalize" style="text-transform: capitalize;"><?= $itemType ?></span>
                         </div>
 
                         <!-- Details -->

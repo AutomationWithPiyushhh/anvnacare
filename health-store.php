@@ -144,25 +144,12 @@ try {
                         <?php $discountPercentage = round((($prod['mrp'] - $prod['discount_price']) / $prod['mrp']) * 100); ?>
                         <div class="col-sm-6 col-md-4 product-item-col">
                             <div class="card glass-card h-100 p-3 border-0" data-testid="product-card" id="prod-card-<?= $prod['id'] ?>">
-                                <div class="position-relative text-center mb-3">
-                                    <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="prod-discount-badge-<?= $prod['id'] ?>"><?= $discountPercentage ?>% OFF</span>
-                                    <?php
-                                    $imgSrc = 'assets/images/categories/wellness.png';
-                                    if (!empty($prod['image'])) {
-                                        if (file_exists(__DIR__ . '/' . $prod['image'])) {
-                                            $imgSrc = $prod['image'];
-                                        } else {
-                                            $svgPath = str_replace('.png', '.svg', $prod['image']);
-                                            if (file_exists(__DIR__ . '/' . $svgPath)) {
-                                                $imgSrc = $svgPath;
-                                            }
-                                        }
-                                    }
-                                    ?>
-                                    <img src="<?= htmlspecialchars($imgSrc) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($prod['name']) ?>" style="height: 160px; object-fit: contain;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-danger" data-testid="prod-discount-badge-<?= $prod['id'] ?>"><?= $discountPercentage ?>% OFF</span>
+                                    <span class="badge bg-light text-success border"><?= $prod['category'] ?></span>
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1 text-truncate" id="prod-name-<?= $prod['id'] ?>" data-testid="prod-name"><?= htmlspecialchars($prod['name']) ?></h6>
-                                <p class="text-muted small mb-2"><span class="badge bg-light text-success border"><?= $prod['category'] ?></span> | Stock: <strong class="<?= $prod['stock'] > 0 ? 'text-success' : 'text-danger' ?>"><?= $prod['stock'] ?> left</strong></p>
+                                <p class="text-muted small mb-2">Stock: <strong class="<?= $prod['stock'] > 0 ? 'text-success' : 'text-danger' ?>"><?= $prod['stock'] ?> left</strong></p>
                                 <div class="d-flex align-items-center mb-2">
                                     <span class="badge bg-success me-2" id="prod-rating-<?= $prod['id'] ?>" data-testid="prod-rating"><i class="bi bi-star-fill"></i> <?= $prod['rating'] ?></span>
                                     <span class="text-muted small">Rating: <?= $prod['rating'] ?> / 5</span>

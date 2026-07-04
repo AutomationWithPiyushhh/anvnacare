@@ -132,9 +132,9 @@ require_once 'includes/header.php';
                 echo '
                 <div class="col-sm-6 col-md-4 col-lg-3">
                     <div class="card glass-card h-100 p-3 border-0" data-testid="medicine-card" id="med-card-' . $med['id'] . '">
-                        <div class="position-relative text-center mb-3">
-                            <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="med-discount-badge-' . $med['id'] . '">' . $discountPercentage . '% OFF</span>
-                             <img src="assets/images/categories/' . strtolower($med['category']) . '.png" class="img-fluid rounded" alt="' . htmlspecialchars($med['name']) . '" style="height: 150px; object-fit: contain;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-danger" data-testid="med-discount-badge-' . $med['id'] . '">' . $discountPercentage . '% OFF</span>
+                            <span class="badge bg-light text-success border">' . htmlspecialchars($med['category']) . '</span>
                         </div>
                         <h6 class="fw-bold text-dark text-truncate mb-1" id="med-name-' . $med['id'] . '" data-testid="med-name">' . htmlspecialchars($med['name']) . '</h6>
                         <p class="text-muted small mb-2">' . htmlspecialchars($med['manufacturer']) . '</p>

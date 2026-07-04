@@ -94,33 +94,10 @@ try {
                             $rowKey = "{$itemType}_{$itemId}";
                             ?>
                             <div class="list-group-item bg-transparent px-0 py-3 d-flex flex-wrap align-items-center justify-content-between border-bottom" data-testid="cart-row" id="cart-row-<?= $rowKey ?>">
-                                <div class="d-flex align-items-center gap-3 col-12 col-sm-6 mb-2 mb-sm-0">
-                                    <!-- Category image with fallback -->
-                                    <?php
-                                     $imgSrc = 'assets/images/categories/wellness.png';
-                                     if (isset($item['category'])) {
-                                         $c = strtolower($item['category']);
-                                         if (in_array($c, ['otc', 'prescription', 'vitamins', 'supplements', 'devices', 'wellness'])) {
-                                             $imgSrc = 'assets/images/categories/' . $c . '.png';
-                                         }
-                                     }
-                                     if (!empty($item['image'])) {
-                                         if (file_exists(__DIR__ . '/' . $item['image'])) {
-                                             $imgSrc = $item['image'];
-                                         } else {
-                                             $svgPath = str_replace('.png', '.svg', $item['image']);
-                                             if (file_exists(__DIR__ . '/' . $svgPath)) {
-                                                 $imgSrc = $svgPath;
-                                             }
-                                         }
-                                     }
-                                    ?>
-                                    <img src="<?= htmlspecialchars($imgSrc) ?>" class="img-fluid rounded border" alt="<?= htmlspecialchars($item['name']) ?>" style="width: 70px; height: 60px; object-fit: contain;">
-                                    <div>
-                                        <h6 class="fw-bold text-dark mb-0" data-testid="cart-item-name"><?= htmlspecialchars($item['name']) ?></h6>
-                                        <span class="text-muted small"><?= htmlspecialchars($item['manufacturer']) ?></span>
-                                        <span class="badge bg-light text-dark border ms-1" style="font-size: 0.7rem; text-transform: capitalize;"><?= $itemType ?></span>
-                                    </div>
+                                <div class="col-12 col-sm-6 mb-2 mb-sm-0">
+                                    <h6 class="fw-bold text-dark mb-0" data-testid="cart-item-name"><?= htmlspecialchars($item['name']) ?></h6>
+                                    <span class="text-muted small"><?= htmlspecialchars($item['manufacturer']) ?></span>
+                                    <span class="badge bg-light text-dark border ms-1" style="font-size: 0.7rem; text-transform: capitalize;"><?= $itemType ?></span>
                                 </div>
 
                                 <!-- Quantity adjuster -->

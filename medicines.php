@@ -155,16 +155,14 @@ try {
                         <?php $discountPercentage = round((($med['mrp'] - $med['discount_price']) / $med['mrp']) * 100); ?>
                         <div class="col-sm-6 col-md-4">
                             <div class="card glass-card h-100 p-3 border-0 medicine-item-card" data-testid="medicine-card" id="med-card-<?= $med['id'] ?>">
-                                <div class="position-relative text-center mb-3">
-                                    <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="med-discount-badge-<?= $med['id'] ?>"><?= $discountPercentage ?>% OFF</span>
-                                    <a href="medicine-details.php?id=<?= $med['id'] ?>" data-testid="med-detail-link-<?= $med['id'] ?>">
-                                        <img src="assets/images/categories/<?= strtolower($med['category']) ?>.png" class="img-fluid rounded" alt="<?= htmlspecialchars($med['name']) ?>" style="height: 160px; object-fit: contain;">
-                                    </a>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-danger" data-testid="med-discount-badge-<?= $med['id'] ?>"><?= $discountPercentage ?>% OFF</span>
+                                    <span class="badge bg-light text-success border"><?= $med['category'] ?></span>
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1 text-truncate" id="med-name-<?= $med['id'] ?>" data-testid="med-name">
                                     <a href="medicine-details.php?id=<?= $med['id'] ?>" class="text-decoration-none text-dark hover-accent"><?= htmlspecialchars($med['name']) ?></a>
                                 </h6>
-                                <p class="text-muted small mb-2"><?= htmlspecialchars($med['manufacturer']) ?> | <span class="badge bg-light text-success border"><?= $med['category'] ?></span></p>
+                                <p class="text-muted small mb-2"><?= htmlspecialchars($med['manufacturer']) ?></p>
                                 <div class="d-flex align-items-center mb-2">
                                     <span class="badge bg-success me-2" id="med-rating-<?= $med['id'] ?>" data-testid="med-rating"><i class="bi bi-star-fill"></i> <?= $med['rating'] ?></span>
                                     <span class="text-muted small">Stock: <strong class="<?= $med['stock'] > 0 ? 'text-success' : 'text-danger' ?>"><?= $med['stock'] ?> left</strong></span>
@@ -325,16 +323,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         div.className = 'col-sm-6 col-md-4';
                         div.innerHTML = `
                             <div class="card glass-card h-100 p-3 border-0 medicine-item-card" data-testid="medicine-card" id="med-card-${med.id}">
-                                <div class="position-relative text-center mb-3">
-                                    <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="med-discount-badge-${med.id}">${discount}% OFF</span>
-                                    <a href="medicine-details.php?id=${med.id}" data-testid="med-detail-link-${med.id}">
-                                        <img src="assets/images/categories/${med.category.toLowerCase()}.png" class="img-fluid rounded" alt="${med.name}" style="height: 160px; object-fit: contain;">
-                                    </a>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-danger" data-testid="med-discount-badge-${med.id}">${discount}% OFF</span>
+                                    <span class="badge bg-light text-success border">${med.category}</span>
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1 text-truncate" id="med-name-${med.id}" data-testid="med-name">
                                     <a href="medicine-details.php?id=${med.id}" class="text-decoration-none text-dark hover-accent">${med.name}</a>
                                 </h6>
-                                <p class="text-muted small mb-2">${med.manufacturer} | <span class="badge bg-light text-success border">${med.category}</span></p>
+                                <p class="text-muted small mb-2">${med.manufacturer}</p>
                                 <div class="d-flex align-items-center mb-2">
                                     <span class="badge bg-success me-2" id="med-rating-${med.id}" data-testid="med-rating"><i class="bi bi-star-fill"></i> ${med.rating}</span>
                                     <span class="text-muted small">Stock: <strong class="${med.stock > 0 ? 'text-success' : 'text-danger'}">${med.stock} left</strong></span>

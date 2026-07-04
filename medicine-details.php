@@ -33,19 +33,14 @@ try {
     </div>
 
     <!-- Product Details Grid -->
-    <div class="row g-5">
-        <!-- Image Area -->
-        <div class="col-md-5">
-            <div class="card glass-card p-4 text-center border-0" id="detailsImageCard" data-testid="details-image-card">
-                <span class="badge bg-danger position-absolute top-0 start-0 m-3 fs-6" data-testid="discount-tag"><?= $discountPercentage ?>% OFF</span>
-                <img src="assets/images/categories/<?= strtolower($med['category']) ?>.png" class="img-fluid rounded details-image mx-auto" alt="<?= htmlspecialchars($med['name']) ?>" id="medDetailsImg" data-testid="med-details-img">
-            </div>
-        </div>
-
+    <div class="row g-5 justify-content-center">
         <!-- Details Area -->
-        <div class="col-md-7">
+        <div class="col-md-10 col-lg-8">
             <div id="detailsTextContainer" data-testid="details-text-container">
-                <span class="badge bg-light text-success border mb-2 fs-6" id="detailsCategory" data-testid="details-category"><?= $med['category'] ?></span>
+                <div class="d-flex gap-2 align-items-center mb-2">
+                    <span class="badge bg-light text-success border fs-6" id="detailsCategory" data-testid="details-category"><?= $med['category'] ?></span>
+                    <span class="badge bg-danger fs-6" data-testid="discount-tag"><?= $discountPercentage ?>% OFF</span>
+                </div>
                 <h2 class="fw-bold text-dark mb-1" id="medDetailsName" data-testid="med-details-name"><?= htmlspecialchars($med['name']) ?></h2>
                 <p class="text-muted mb-3" id="medDetailsManufacturer" data-testid="med-details-manufacturer">Manufacturer: <strong><?= htmlspecialchars($med['manufacturer']) ?></strong></p>
 
