@@ -20,8 +20,21 @@ try {
     $revenue = $pdo->query("SELECT SUM(net_amount) FROM orders WHERE payment_status = 'Paid'")->fetchColumn() ?: 0.00;
     $appCount = $pdo->query("SELECT COUNT(*) FROM appointments")->fetchColumn();
 
-    // 2. Fetch Users
-    $users = $pdo->query("SELECT id, name, email, phone, created_at FROM users WHERE role = 'user' ORDER BY id DESC LIMIT 10")->fetchAll();
+    // Helper function to build page URL
+    function getPageUrl($paramName, $pageValue) {
+        $params = $_GET;
+        $params[$paramName] = $pageValue;
+        unset($params['status_updated']);
+        return '?' . http_build_query($params);
+    }
+
+    // 2. Fetch Users (Paginated)
+    $pageUsers = max(1, isset($_GET['page_users']) ? (int)$_GET['page_users'] : 1);
+    $totalUsers = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE role = 'user'")->fetchColumn();
+    $totalPagesUsers = max(1, (int)ceil($totalUsers / 10));
+    if ($pageUsers > $totalPagesUsers) $pageUsers = $totalPagesUsers;
+    $offsetUsers = ($pageUsers - 1) * 10;
+    $users = $pdo->query("SELECT id, name, email, phone, created_at FROM users WHERE role = 'user' ORDER BY id DESC LIMIT 10 OFFSET $offsetUsers")->fetchAll();
 
     // 3. Fetch Medicines
     $medicines = $pdo->query("SELECT id, name, manufacturer, mrp, discount_price, stock FROM medicines ORDER BY id ASC LIMIT 10")->fetchAll();
@@ -29,21 +42,31 @@ try {
     // 4. Fetch Doctors
     $doctors = $pdo->query("SELECT id, name, specialization, experience, fee FROM doctors ORDER BY id ASC LIMIT 10")->fetchAll();
 
-    // 5. Fetch Appointments
+    // 5. Fetch Appointments (Paginated)
+    $pageApps = max(1, isset($_GET['page_apps']) ? (int)$_GET['page_apps'] : 1);
+    $totalApps = (int)$pdo->query("SELECT COUNT(*) FROM appointments")->fetchColumn();
+    $totalPagesApps = max(1, (int)ceil($totalApps / 10));
+    if ($pageApps > $totalPagesApps) $pageApps = $totalPagesApps;
+    $offsetApps = ($pageApps - 1) * 10;
     $appointments = $pdo->query("
         SELECT a.id, a.appointment_date, a.appointment_time, a.status, u.name as user_name, d.name as doctor_name 
         FROM appointments a 
         JOIN users u ON a.user_id = u.id 
         JOIN doctors d ON a.doctor_id = d.id 
-        ORDER BY a.id DESC LIMIT 10
+        ORDER BY a.id DESC LIMIT 10 OFFSET $offsetApps
     ")->fetchAll();
 
-    // 6. Fetch Orders
+    // 6. Fetch Orders (Paginated)
+    $pageOrders = max(1, isset($_GET['page_orders']) ? (int)$_GET['page_orders'] : 1);
+    $totalOrders = (int)$pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+    $totalPagesOrders = max(1, (int)ceil($totalOrders / 10));
+    if ($pageOrders > $totalPagesOrders) $pageOrders = $totalPagesOrders;
+    $offsetOrders = ($pageOrders - 1) * 10;
     $orders = $pdo->query("
         SELECT o.id, o.order_number, o.net_amount, o.order_status, o.created_at, u.name as user_name 
         FROM orders o 
         JOIN users u ON o.user_id = u.id 
-        ORDER BY o.id DESC LIMIT 10
+        ORDER BY o.id DESC LIMIT 10 OFFSET $offsetOrders
     ")->fetchAll();
 
 } catch (PDOException $e) {
@@ -253,6 +276,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Pagination for Users -->
+                        <?php if ($totalPagesUsers > 1): ?>
+                            <nav aria-label="Page navigation" class="mt-4" data-testid="users-pagination">
+                                <ul class="pagination justify-content-center mb-0">
+                                    <li class="page-item <?= $pageUsers <= 1 ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= getPageUrl('page_users', $pageUsers - 1) ?>#v-pills-users" data-testid="users-prev-page">Previous</a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $totalPagesUsers; $i++): ?>
+                                        <li class="page-item <?= $pageUsers == $i ? 'active' : '' ?>">
+                                            <a class="page-link" href="<?= getPageUrl('page_users', $i) ?>#v-pills-users" data-testid="users-page-<?= $i ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?= $pageUsers >= $totalPagesUsers ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= getPageUrl('page_users', $pageUsers + 1) ?>#v-pills-users" data-testid="users-next-page">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -358,6 +400,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Pagination for Appointments -->
+                        <?php if ($totalPagesApps > 1): ?>
+                            <nav aria-label="Page navigation" class="mt-4" data-testid="apps-pagination">
+                                <ul class="pagination justify-content-center mb-0">
+                                    <li class="page-item <?= $pageApps <= 1 ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= getPageUrl('page_apps', $pageApps - 1) ?>#v-pills-apps" data-testid="apps-prev-page">Previous</a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $totalPagesApps; $i++): ?>
+                                        <li class="page-item <?= $pageApps == $i ? 'active' : '' ?>">
+                                            <a class="page-link" href="<?= getPageUrl('page_apps', $i) ?>#v-pills-apps" data-testid="apps-page-<?= $i ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?= $pageApps >= $totalPagesApps ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= getPageUrl('page_apps', $pageApps + 1) ?>#v-pills-apps" data-testid="apps-next-page">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -414,6 +475,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Pagination for Orders -->
+                        <?php if ($totalPagesOrders > 1): ?>
+                            <nav aria-label="Page navigation" class="mt-4" data-testid="orders-pagination">
+                                <ul class="pagination justify-content-center mb-0">
+                                    <li class="page-item <?= $pageOrders <= 1 ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= getPageUrl('page_orders', $pageOrders - 1) ?>#v-pills-orders" data-testid="orders-prev-page">Previous</a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $totalPagesOrders; $i++): ?>
+                                        <li class="page-item <?= $pageOrders == $i ? 'active' : '' ?>">
+                                            <a class="page-link" href="<?= getPageUrl('page_orders', $i) ?>#v-pills-orders" data-testid="orders-page-<?= $i ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?= $pageOrders >= $totalPagesOrders ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= getPageUrl('page_orders', $pageOrders + 1) ?>#v-pills-orders" data-testid="orders-next-page">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -423,5 +503,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Restore active tab from hash
+    const hash = window.location.hash;
+    if (hash) {
+        const tabEl = document.querySelector(`a[href="${hash}"]`);
+        if (tabEl) {
+            const tab = new bootstrap.Tab(tabEl);
+            tab.show();
+        }
+    }
+
+    // Update URL hash when a tab is clicked
+    const tabLinks = document.querySelectorAll('.nav-link-admin');
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            window.location.hash = this.getAttribute('href');
+        });
+    });
+});
+</script>
 </body>
 </html>
