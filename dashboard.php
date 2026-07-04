@@ -12,9 +12,9 @@ $userId = $_SESSION['user_id'];
 
 try {
     // 1. Fetch Stats counts
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM cart WHERE user_id = ?");
+    $stmt = $pdo->prepare("SELECT COALESCE(SUM(quantity), 0) FROM cart WHERE user_id = ?");
     $stmt->execute([$userId]);
-    $dbCartCount = $stmt->fetchColumn();
+    $dbCartCount = (int)$stmt->fetchColumn();
 
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM wishlist WHERE user_id = ?");
     $stmt->execute([$userId]);

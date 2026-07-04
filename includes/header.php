@@ -4,18 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once __DIR__ . '/../config/database.php';
 
-// Calculate Cart Item Count
-$cartCount = 0;
-if (isset($_SESSION['user_id'])) {
-    $stmt = $pdo->prepare("SELECT SUM(quantity) as total_qty FROM cart WHERE user_id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $cartCount = (int)$stmt->fetchColumn();
-} else if (isset($_SESSION['guest_cart'])) {
-    foreach ($_SESSION['guest_cart'] as $qty) {
-        $cartCount += $qty;
-    }
-}
-
 // Check "Remember Me" Cookie if user is not logged in
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
     $email = $_COOKIE['remember_user'];
@@ -27,6 +15,18 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_role'] = $user['role'];
+    }
+}
+
+// Calculate Cart Item Count
+$cartCount = 0;
+if (isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT SUM(quantity) as total_qty FROM cart WHERE user_id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $cartCount = (int)$stmt->fetchColumn();
+} else if (isset($_SESSION['guest_cart'])) {
+    foreach ($_SESSION['guest_cart'] as $qty) {
+        $cartCount += $qty;
     }
 }
 ?>
