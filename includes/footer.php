@@ -44,7 +44,7 @@
         <!-- Copyright and Social Icons -->
         <div class="row align-items-center">
             <div class="col-md-7 col-lg-8 text-md-start">
-                <p class="text-white-50">© 2026 Copyright: <a href="https://anvnacare.alwaysdata.net/" class="text-success text-decoration-none fw-bold" id="footerCopyLink" data-testid="footer-copy-link">ANVNA Care</a>. Built for QA Test Automation Students.</p>
+                <p class="text-white-50">© 2026 Copyright: <a href="https://anvnacare.alwaysdata.net/" class="text-success text-decoration-none fw-bold" id="footerCopyLink" data-testid="footer-copy-link">ANVNA Care</a>. Built for Future QA Automation Engineers</p>
             </div>
             <div class="col-md-5 col-lg-4 text-md-end">
                 <ul class="list-unstyled list-inline">
