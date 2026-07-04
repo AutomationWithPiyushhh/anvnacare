@@ -10,17 +10,17 @@ $subtotal = 0.00;
 try {
     if (isset($_SESSION['user_id'])) {
         // Logged-in Cart
-        $stmt = $pdo->prepare("SELECT c.id as cart_record_id, c.item_type, c.item_id, c.quantity, m.name, m.discount_price, m.mrp, m.stock, m.manufacturer
+        $stmt = $pdo->prepare("SELECT c.id as cart_record_id, c.item_type, c.item_id, c.quantity, m.name, m.discount_price, m.mrp, m.stock, m.manufacturer, m.category
             FROM cart c
             JOIN medicines m ON c.item_id = m.id AND c.item_type = 'medicine'
             WHERE c.user_id = ?
             UNION
-            SELECT c.id as cart_record_id, c.item_type, c.item_id, c.quantity, p.name, p.discount_price, p.mrp, p.stock, 'Health Store' as manufacturer
+            SELECT c.id as cart_record_id, c.item_type, c.item_id, c.quantity, p.name, p.discount_price, p.mrp, p.stock, 'Health Store' as manufacturer, p.category
             FROM cart c
             JOIN products p ON c.item_id = p.id AND c.item_type = 'product'
             WHERE c.user_id = ?
             UNION
-            SELECT c.id as cart_record_id, c.item_type, c.item_id, c.quantity, t.name, t.discount_price, t.mrp, 999 as stock, 'Diagnostics' as manufacturer
+            SELECT c.id as cart_record_id, c.item_type, c.item_id, c.quantity, t.name, t.discount_price, t.mrp, 999 as stock, 'Diagnostics' as manufacturer, t.category
             FROM cart c
             JOIN tests t ON c.item_id = t.id AND c.item_type = 'test'
             WHERE c.user_id = ?");
@@ -32,7 +32,7 @@ try {
             foreach ($_SESSION['guest_cart'] as $key => $qty) {
                 list($itemType, $itemId) = explode('_', $key);
                 $tableName = ($itemType === 'medicine') ? 'medicines' : (($itemType === 'product') ? 'products' : 'tests');
-                $stmt = $pdo->prepare("SELECT id, name, discount_price, mrp, " . ($itemType !== 'test' ? 'stock' : '999 as stock') . ", " . ($itemType === 'medicine' ? 'manufacturer' : "'Health Store' as manufacturer") . " FROM $tableName WHERE id = ?");
+                $stmt = $pdo->prepare("SELECT id, name, discount_price, mrp, category, " . ($itemType !== 'test' ? 'stock' : '999 as stock') . ", " . ($itemType === 'medicine' ? 'manufacturer' : "'Health Store' as manufacturer") . " FROM $tableName WHERE id = ?");
                 $stmt->execute([$itemId]);
                 $details = $stmt->fetch();
                 if ($details) {
@@ -45,7 +45,8 @@ try {
                         'discount_price' => $details['discount_price'],
                         'mrp' => $details['mrp'],
                         'stock' => $details['stock'],
-                        'manufacturer' => $details['manufacturer']
+                        'manufacturer' => $details['manufacturer'],
+                        'category' => $details['category']
                     ];
                 }
             }
@@ -93,8 +94,17 @@ try {
                             ?>
                             <div class="list-group-item bg-transparent px-0 py-3 d-flex flex-wrap align-items-center justify-content-between border-bottom" data-testid="cart-row" id="cart-row-<?= $rowKey ?>">
                                 <div class="d-flex align-items-center gap-3 col-12 col-sm-6 mb-2 mb-sm-0">
-                                    <!-- Placeholder image -->
-                                    <img src="https://placehold.co/100x80/eef7f2/0a6c42?text=<?= urlencode(substr($item['name'], 0, 5)) ?>" class="img-fluid rounded border" alt="<?= htmlspecialchars($item['name']) ?>" style="width: 70px; height: 60px; object-fit: contain;">
+                                    <!-- Category image with fallback -->
+                                    <?php
+                                    $catClean = 'wellness';
+                                    if (isset($item['category'])) {
+                                        $c = strtolower($item['category']);
+                                        if (in_array($c, ['otc', 'prescription', 'vitamins', 'supplements', 'devices', 'wellness'])) {
+                                            $catClean = $c;
+                                        }
+                                    }
+                                    ?>
+                                    <img src="assets/images/categories/<?= $catClean ?>.png" class="img-fluid rounded border" alt="<?= htmlspecialchars($item['name']) ?>" style="width: 70px; height: 60px; object-fit: contain;">
                                     <div>
                                         <h6 class="fw-bold text-dark mb-0" data-testid="cart-item-name"><?= htmlspecialchars($item['name']) ?></h6>
                                         <span class="text-muted small"><?= htmlspecialchars($item['manufacturer']) ?></span>

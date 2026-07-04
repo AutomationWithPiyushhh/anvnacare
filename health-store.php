@@ -146,7 +146,7 @@ try {
                             <div class="card glass-card h-100 p-3 border-0" data-testid="product-card" id="prod-card-<?= $prod['id'] ?>">
                                 <div class="position-relative text-center mb-3">
                                     <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="prod-discount-badge-<?= $prod['id'] ?>"><?= $discountPercentage ?>% OFF</span>
-                                    <img src="https://placehold.co/240x180/eef7f2/0a6c42?text=<?= urlencode($prod['name']) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($prod['name']) ?>" style="height: 160px; object-fit: contain;">
+                                    <img src="assets/images/categories/<?= strtolower($prod['category']) ?>.png" class="img-fluid rounded" alt="<?= htmlspecialchars($prod['name']) ?>" style="height: 160px; object-fit: contain;">
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1 text-truncate" id="prod-name-<?= $prod['id'] ?>" data-testid="prod-name"><?= htmlspecialchars($prod['name']) ?></h6>
                                 <p class="text-muted small mb-2"><span class="badge bg-light text-success border"><?= $prod['category'] ?></span> | Stock: <strong class="<?= $prod['stock'] > 0 ? 'text-success' : 'text-danger' ?>"><?= $prod['stock'] ?> left</strong></p>

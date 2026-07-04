@@ -38,7 +38,7 @@ try {
         <div class="col-md-5">
             <div class="card glass-card p-4 text-center border-0" id="detailsImageCard" data-testid="details-image-card">
                 <span class="badge bg-danger position-absolute top-0 start-0 m-3 fs-6" data-testid="discount-tag"><?= $discountPercentage ?>% OFF</span>
-                <img src="https://placehold.co/400x320/eef7f2/0a6c42?text=<?= urlencode($med['name']) ?>" class="img-fluid rounded details-image mx-auto" alt="<?= htmlspecialchars($med['name']) ?>" id="medDetailsImg" data-testid="med-details-img">
+                <img src="assets/images/categories/<?= strtolower($med['category']) ?>.png" class="img-fluid rounded details-image mx-auto" alt="<?= htmlspecialchars($med['name']) ?>" id="medDetailsImg" data-testid="med-details-img">
             </div>
         </div>
 

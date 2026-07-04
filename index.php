@@ -134,7 +134,7 @@ require_once 'includes/header.php';
                     <div class="card glass-card h-100 p-3 border-0" data-testid="medicine-card" id="med-card-' . $med['id'] . '">
                         <div class="position-relative text-center mb-3">
                             <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="med-discount-badge-' . $med['id'] . '">' . $discountPercentage . '% OFF</span>
-                            <img src="https://placehold.co/180x150/eef7f2/0a6c42?text=' . urlencode($med['name']) . '" class="img-fluid rounded" alt="' . htmlspecialchars($med['name']) . '" style="height: 150px; object-fit: contain;">
+                             <img src="assets/images/categories/' . strtolower($med['category']) . '.png" class="img-fluid rounded" alt="' . htmlspecialchars($med['name']) . '" style="height: 150px; object-fit: contain;">
                         </div>
                         <h6 class="fw-bold text-dark text-truncate mb-1" id="med-name-' . $med['id'] . '" data-testid="med-name">' . htmlspecialchars($med['name']) . '</h6>
                         <p class="text-muted small mb-2">' . htmlspecialchars($med['manufacturer']) . '</p>

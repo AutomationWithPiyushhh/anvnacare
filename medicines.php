@@ -158,7 +158,7 @@ try {
                                 <div class="position-relative text-center mb-3">
                                     <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="med-discount-badge-<?= $med['id'] ?>"><?= $discountPercentage ?>% OFF</span>
                                     <a href="medicine-details.php?id=<?= $med['id'] ?>" data-testid="med-detail-link-<?= $med['id'] ?>">
-                                        <img src="https://placehold.co/240x180/eef7f2/0a6c42?text=<?= urlencode($med['name']) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($med['name']) ?>" style="height: 160px; object-fit: contain;">
+                                        <img src="assets/images/categories/<?= strtolower($med['category']) ?>.png" class="img-fluid rounded" alt="<?= htmlspecialchars($med['name']) ?>" style="height: 160px; object-fit: contain;">
                                     </a>
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1 text-truncate" id="med-name-<?= $med['id'] ?>" data-testid="med-name">
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="position-relative text-center mb-3">
                                     <span class="position-absolute top-0 start-0 badge bg-danger" data-testid="med-discount-badge-${med.id}">${discount}% OFF</span>
                                     <a href="medicine-details.php?id=${med.id}" data-testid="med-detail-link-${med.id}">
-                                        <img src="https://placehold.co/240x180/eef7f2/0a6c42?text=${encodeURIComponent(med.name)}" class="img-fluid rounded" alt="${med.name}" style="height: 160px; object-fit: contain;">
+                                        <img src="assets/images/categories/${med.category.toLowerCase()}.png" class="img-fluid rounded" alt="${med.name}" style="height: 160px; object-fit: contain;">
                                     </a>
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1 text-truncate" id="med-name-${med.id}" data-testid="med-name">

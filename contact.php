@@ -19,7 +19,7 @@ require_once 'includes/header.php';
                     <span class="fs-4 text-success"><i class="bi bi-geo-alt-fill"></i></span>
                     <div>
                         <h6 class="fw-bold text-dark mb-1">Corporate HQ Address</h6>
-                        <span class="text-muted small">noida, Uttar Pradesh, 201301</span>
+                        <span class="text-muted small">Noida, Uttar Pradesh, 201301</span>
                     </div>
                 </div>
 
@@ -27,7 +27,7 @@ require_once 'includes/header.php';
                     <span class="fs-4 text-success"><i class="bi bi-telephone-fill"></i></span>
                     <div>
                         <h6 class="fw-bold text-dark mb-1">Helpline Contacts</h6>
-                        <span class="text-muted small">+1 (555) 123-4567 | +1 (555) 765-4321</span>
+                        <span class="text-muted small">+91 728384 05** </span>
                     </div>
                 </div>
 
