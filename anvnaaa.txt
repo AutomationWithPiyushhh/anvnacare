@@ -1,0 +1,93 @@
+# Deploying ANVNA Care to alwaysData
+
+This step-by-step guide explains how to deploy the **ANVNA Care** PHP/MySQL application live to **alwaysData**, a developer-friendly cloud hosting provider offering free and premium hosting services.
+
+---
+
+## Step 1: Create an alwaysData Account
+1. Go to [alwaysdata.com](https://www.alwaysdata.com) and click **Sign Up**.
+2. Select the **Free Trial Account** (offers 100MB of web storage, PHP 8, and MySQL).
+3. Set your account name (e.g., `anvnacare`). This name will dictate your default subdomain address: `https://anvnacare.alwaysdata.net`.
+
+---
+
+## Step 2: Set Up the Remote MySQL Database
+alwaysData prepends your account name as a prefix to databases and database usernames.
+
+1. Log in to your **alwaysData Administration Panel**.
+2. In the left navigation, go to **Databases** ➔ **MySQL**.
+3. **Create Database**:
+   - Database Name: `anvnacare_db` (or similar).
+4. **Create User**:
+   - Username: `anvnacare_usr`.
+   - Set a strong, secure password (remember this password for Step 4).
+5. **Assign Privileges**: Ensure the new database user is assigned full permissions (All Privileges) to your database.
+6. Note the database **Host Address** listed in the summary panel. It typically looks like:
+   `mysql-anvnacare.alwaysdata.net`
+
+---
+
+## Step 3: Import Database Schema & Test Data
+1. Inside the alwaysData MySQL page, click the **phpMyAdmin** link (or go directly to the phpMyAdmin login page for your database host).
+2. Log in using your new MySQL database credentials:
+   - **Username**: `anvnacare_usr` (with prefix)
+   - **Password**: *Your secure password*
+3. Select your database `anvnacare_db` in the left panel.
+4. Go to the **Import** tab.
+5. Upload and execute [schema.sql](file:///c:/Users/User/anvnacare/database/schema.sql) first.
+6. Once the schema is imported, go to **Import** again and upload and execute [dummy_data.sql](file:///c:/Users/User/anvnacare/database/dummy_data.sql) to seed the 15 users, 20 medicines, 15 doctors, and diagnostic packages.
+
+---
+
+## Step 4: Configure Production Database settings
+Before uploading your code, update your connection configuration file [database.php](file:///c:/Users/User/anvnacare/config/database.php) with the live alwaysData credentials.
+
+Edit the connection variables as follows:
+```php
+<?php
+// ANVNA Care Database Configuration - alwaysData Production
+
+$host = 'mysql-anvnacare.alwaysdata.net'; // Your alwaysData MySQL host address
+$port = '3306';
+$db   = 'anvnacare_db';                  // Your alwaysData Database name
+$user = 'anvnacare_usr';                 // Your alwaysData Database username
+$pass = 'your_secure_password';          // The password you set in Step 2
+$charset = 'utf8mb4';
+```
+
+---
+
+## Step 5: Upload Files via SFTP or FTP
+You can upload files using an FTP client like **FileZilla** or **WinSCP**.
+
+1. In the alwaysData Panel, go to **Services** ➔ **FTP/SSH**.
+2. Note your FTP host (`ftp.alwaysdata.com`), your FTP username, and set an FTP password if needed.
+3. Open FileZilla and connect to the host:
+   - **Host**: `ftp.alwaysdata.com`
+   - **Username**: `your_ftp_username`
+   - **Password**: `your_ftp_password`
+   - **Port**: `21` (FTP) or `22` (SFTP)
+4. On the remote server side, navigate into your site's directory (typically `/public/` or `/public_html/`).
+5. On your local side, select all files inside `c:\Users\User\anvnacare` (excluding your local XAMPP/built-in server configuration files) and drag them into the remote `/public/` directory.
+
+---
+
+## Step 6: Configure Site Settings on alwaysData
+1. Go to **Web** ➔ **Sites** in the alwaysData Administration Panel.
+2. Edit your default site entry:
+   - **Type**: Select **Apache / PHP** or **Nginx / PHP**.
+   - **PHP Version**: Select **PHP 8.2** (or latest PHP 8.x).
+   - **Document Root**: Set this to `/public/` (or the folder where your files are uploaded).
+3. Click **Submit** to apply the configuration.
+
+---
+
+## Step 7: Final Live Verification
+1. Open your browser and navigate to:
+   `https://youraccount.alwaysdata.net` (e.g., `https://anvnacare.alwaysdata.net`).
+2. Test the core workflows:
+   - **Authentication**: Log in with patient credentials `amit.kumar@anvnacare.com` and password `password123`.
+   - **Pharmacy/Store**: Add a medicine or wellness product to the cart.
+   - **Checkout**: Complete a dummy transaction and verify that the database registers the order.
+   - **REST APIs**: Access `https://youraccount.alwaysdata.net/api/medicines.php` and verify it serves clean JSON payloads.
+

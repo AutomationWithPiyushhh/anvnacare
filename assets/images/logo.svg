@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 60" width="250" height="60">
+  <defs>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a6c42" />
+      <stop offset="100%" stop-color="#074e2f" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#aa7c11" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Leaf Symbol -->
+  <g transform="translate(10, 10)">
+    <!-- Main leaf veins / body -->
+    <path d="M 20 0 C 35 15, 35 30, 20 40 C 5 30, 5 15, 20 0 Z" fill="url(#leafGrad)" />
+    <!-- Golden accent line -->
+    <path d="M 20 0 C 23 12, 23 28, 20 40" stroke="url(#goldGrad)" stroke-width="2" fill="none" />
+  </g>
+  
+  <!-- Text Logo -->
+  <text x="55" y="32" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="800" fill="#0a6c42">ANVNA</text>
+  <text x="135" y="32" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="800" fill="#0284c7">Care</text>
+  
+  <!-- Subtitle -->
+  <text x="55" y="46" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="500" fill="#64748b" letter-spacing="1">YOUR HEALTH, OUR PRIORITY</text>
+</svg>

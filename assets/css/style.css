@@ -1,0 +1,387 @@
+/* 
+   ANVNA Care - Custom Style Sheet
+   Premium Modern Glassmorphic Design System
+   Primary: Emerald Green (#0a6c42) | Accent: Blue (#0284c7)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary-color: #0a6c42;
+    --primary-hover: #074e2f;
+    --primary-light: #eef7f2;
+    --accent-color: #0284c7;
+    --accent-hover: #0369a1;
+    --accent-light: #e0f2fe;
+    --neutral-dark: #1e293b;
+    --neutral-light: #f8fafc;
+    --neutral-border: #e2e8f0;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(10, 108, 66, 0.06);
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --border-radius: 16px;
+    --border-radius-sm: 10px;
+    --border-radius-lg: 24px;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--neutral-dark);
+    background-color: #fbfdfc;
+    overflow-x: hidden;
+    padding-top: 76px; /* Space for fixed header */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: #0f271a;
+}
+
+/* Glassmorphism Styles */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--border-radius);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(10, 108, 66, 0.1);
+    border-color: rgba(10, 108, 66, 0.2);
+}
+
+.glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.02);
+}
+
+/* Custom Buttons */
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    padding: 10px 22px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--primary-hover);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(10, 108, 66, 0.25);
+}
+
+.btn-primary-custom:disabled {
+    background-color: #a7d7c0;
+    cursor: not-allowed;
+}
+
+.btn-secondary-custom {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    padding: 10px 22px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary-custom:hover {
+    background-color: var(--accent-hover);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25);
+}
+
+.btn-outline-primary-custom {
+    color: var(--primary-color);
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    padding: 8px 20px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-primary-custom:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+/* Nav Menu Dropdowns on Hover */
+@media (min-width: 992px) {
+    .dropdown-hover:hover .dropdown-menu {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .dropdown-hover .dropdown-menu {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.25s ease;
+    }
+}
+
+/* Nav Brand Logo Adjustments */
+.navbar-brand img {
+    height: 40px;
+    object-fit: contain;
+}
+
+/* QA Tooltip & Element styling */
+.qa-tooltip-trigger {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Custom Loader Overlay (for automation practice) */
+#globalLoader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    transition: opacity 0.3s ease;
+}
+
+/* Custom Skeleton Loader CSS */
+.skeleton-box {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: var(--border-radius-sm);
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Search Dropdown / Autosuggestion Box */
+.autosuggest-container {
+    position: relative;
+}
+
+.autosuggest-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid var(--neutral-border);
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.autosuggest-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.autosuggest-item:hover {
+    background-color: var(--primary-light);
+}
+
+/* Drag and Drop Zone */
+.drag-drop-zone {
+    border: 2px dashed #0a6c42;
+    border-radius: var(--border-radius);
+    background-color: var(--primary-light);
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drag-drop-zone.dragover {
+    background-color: #d1ebd8;
+    border-color: #074e2f;
+}
+
+/* Badge for Cart count */
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+/* Step Wizard Progress Bar */
+.wizard-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.wizard-steps::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--neutral-border);
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.wizard-step-line-active {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 3px;
+    background-color: var(--primary-color);
+    transform: translateY(-50%);
+    z-index: 1;
+    transition: width 0.4s ease;
+}
+
+.wizard-step {
+    position: relative;
+    z-index: 2;
+    background-color: #fbfdfc;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid var(--neutral-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #64748b;
+    transition: all 0.4s ease;
+}
+
+.wizard-step.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--primary-light);
+}
+
+.wizard-step.completed {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Custom Toast Container */
+#customToastContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.custom-toast {
+    background: rgba(255, 255, 255, 0.95);
+    border-left: 5px solid var(--primary-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    min-width: 280px;
+    padding: 15px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideInRight 0.3s ease forwards;
+}
+
+.custom-toast.info {
+    border-left-color: var(--accent-color);
+}
+
+.custom-toast.danger {
+    border-left-color: #ef4444;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Details Pages styling */
+.details-image {
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: var(--border-radius);
+}
+
+.doctor-profile-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--primary-light);
+}
+
+/* Banner Hero sections */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 60px 40px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(10, 108, 66, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+    top: -100px;
+    right: -100px;
+    border-radius: 50%;
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
