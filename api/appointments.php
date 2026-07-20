@@ -2,6 +2,7 @@
 // API - Appointments Manager
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -27,6 +28,10 @@ if (!empty($raw_input)) {
 $data = array_merge($_POST, $data);
 
 $action = $data['action'] ?? '';
+
+// CSRF protection for all appointment actions
+csrf_protect($data);
+
 
 try {
     if ($action === 'cancel') {
@@ -95,6 +100,21 @@ try {
         }
 
         // Book appointment
+        // --- Duplicate slot check: prevent booking same doctor at same date+time ---
+        $dupStmt = $pdo->prepare(
+            "SELECT id FROM appointments WHERE user_id = ? AND doctor_id = ? AND appointment_date = ? AND appointment_time = ? AND status = 'Upcoming'"
+        );
+        $dupStmt->execute([$userId, $doctorId, $date, $time]);
+        if ($dupStmt->fetch()) {
+            http_response_code(409);
+            echo json_encode([
+                'success' => false,
+                'message' => 'You already have an upcoming appointment with this doctor on ' . $date . ' at ' . $time . '.'
+            ]);
+            exit;
+        }
+        // --- End duplicate check ---
+
         $insert = $pdo->prepare("INSERT INTO appointments (user_id, doctor_id, appointment_date, appointment_time, status) VALUES (?, ?, ?, ?, 'Upcoming')");
         $insert->execute([$userId, $doctorId, $date, $time]);
         $appId = $pdo->lastInsertId();

@@ -2,6 +2,7 @@
 // API - Manage Saved Addresses
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -38,6 +39,9 @@ try {
     } 
     
     if ($method === 'POST') {
+        // CSRF protection
+        csrf_protect($data);
+
         $name = trim($data['name'] ?? '');
         $phone = trim($data['phone'] ?? '');
         $line1 = trim($data['address_line1'] ?? '');
@@ -92,6 +96,63 @@ try {
                 'is_default' => $isDefault
             ]
         ]);
+        exit;
+    }
+
+    // DELETE — Remove a saved address
+    if ($method === 'DELETE' || ($method === 'POST' && ($data['_method'] ?? '') === 'DELETE')) {
+        // CSRF protection
+        csrf_protect($data);
+
+        $addressId = (int)($data['address_id'] ?? 0);
+        if ($addressId <= 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid address ID.']);
+            exit;
+        }
+
+        // Verify ownership before delete
+        $checkStmt = $pdo->prepare("SELECT id FROM addresses WHERE id = ? AND user_id = ?");
+        $checkStmt->execute([$addressId, $userId]);
+        if (!$checkStmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Address not found.']);
+            exit;
+        }
+
+        $delStmt = $pdo->prepare("DELETE FROM addresses WHERE id = ? AND user_id = ?");
+        $delStmt->execute([$addressId, $userId]);
+
+        echo json_encode(['success' => true, 'message' => 'Address deleted successfully.']);
+        exit;
+    }
+
+    // POST action=set_default — Mark an address as default
+    if ($method === 'POST' && ($data['action'] ?? '') === 'set_default') {
+        // CSRF protection
+        csrf_protect($data);
+
+        $addressId = (int)($data['address_id'] ?? 0);
+        if ($addressId <= 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid address ID.']);
+            exit;
+        }
+
+        // Verify ownership
+        $checkStmt = $pdo->prepare("SELECT id FROM addresses WHERE id = ? AND user_id = ?");
+        $checkStmt->execute([$addressId, $userId]);
+        if (!$checkStmt->fetch()) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Address not found.']);
+            exit;
+        }
+
+        // Unset all defaults for this user, then set selected
+        $pdo->prepare("UPDATE addresses SET is_default = 0 WHERE user_id = ?")->execute([$userId]);
+        $pdo->prepare("UPDATE addresses SET is_default = 1 WHERE id = ? AND user_id = ?")->execute([$addressId, $userId]);
+
+        echo json_encode(['success' => true, 'message' => 'Default address updated.']);
         exit;
     }
 } catch (PDOException $e) {

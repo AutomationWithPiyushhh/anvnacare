@@ -22,6 +22,28 @@ $email = trim($data['email'] ?? '');
 $password = trim($data['password'] ?? '');
 $remember = isset($data['remember']);
 
+// --- Rate Limiting: max 5 failed attempts per 10 minutes per IP ---
+$ipKey = 'login_attempts_' . md5($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+$attempts   = $_SESSION[$ipKey]['count'] ?? 0;
+$lastAttempt = $_SESSION[$ipKey]['last'] ?? 0;
+
+// Reset counter if 10 minutes have passed since last failed attempt
+if ((time() - $lastAttempt) > 600) {
+    $attempts = 0;
+    unset($_SESSION[$ipKey]);
+}
+
+if ($attempts >= 5) {
+    $retryAfter = 600 - (time() - $lastAttempt);
+    http_response_code(429);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Too many failed login attempts. Please wait ' . ceil($retryAfter / 60) . ' minute(s) and try again.'
+    ]);
+    exit;
+}
+// --- End Rate Limiting ---
+
 if (empty($email) || empty($password)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Email and Password are required.']);
@@ -34,11 +56,35 @@ try {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
-        // Login success
+        // Login success — clear any rate limit counter
+        unset($_SESSION[$ipKey]);
+
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_role'] = $user['role'];
+
+        // Merge guest cart into DB cart on login
+        if (!empty($_SESSION['guest_cart'])) {
+            foreach ($_SESSION['guest_cart'] as $key => $qty) {
+                [$itemType, $itemId] = explode('_', $key, 2);
+                $itemId = (int)$itemId;
+                $qty = (int)$qty;
+                if ($qty > 0 && $itemId > 0) {
+                    $existStmt = $pdo->prepare("SELECT id, quantity FROM cart WHERE user_id = ? AND item_type = ? AND item_id = ?");
+                    $existStmt->execute([$user['id'], $itemType, $itemId]);
+                    $existing = $existStmt->fetch();
+                    if ($existing) {
+                        $updStmt = $pdo->prepare("UPDATE cart SET quantity = quantity + ? WHERE id = ?");
+                        $updStmt->execute([$qty, $existing['id']]);
+                    } else {
+                        $insStmt = $pdo->prepare("INSERT INTO cart (user_id, item_type, item_id, quantity) VALUES (?, ?, ?, ?)");
+                        $insStmt->execute([$user['id'], $itemType, $itemId, $qty]);
+                    }
+                }
+            }
+            unset($_SESSION['guest_cart']);
+        }
 
         // Handle "Remember Me" Cookie (30 days)
         if ($remember) {
@@ -59,8 +105,18 @@ try {
             ]
         ]);
     } else {
+        // Increment failed attempt counter
+        $_SESSION[$ipKey] = [
+            'count' => $attempts + 1,
+            'last'  => time()
+        ];
         http_response_code(401);
-        echo json_encode(['success' => false, 'message' => 'Invalid email or password.']);
+        $remaining = 5 - ($attempts + 1);
+        $msg = 'Invalid email or password.';
+        if ($remaining > 0) {
+            $msg .= ' ' . $remaining . ' attempt(s) remaining before lockout.';
+        }
+        echo json_encode(['success' => false, 'message' => $msg]);
     }
 } catch (PDOException $e) {
     http_response_code(500);

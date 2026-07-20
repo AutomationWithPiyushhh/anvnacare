@@ -2,6 +2,7 @@
 // API - Cart Manager
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -32,6 +33,12 @@ $action = $data['action'] ?? '';
 $itemId = (int)($data['item_id'] ?? 0);
 $itemType = $data['item_type'] ?? ''; // 'medicine', 'product', 'test'
 $quantity = (int)($data['quantity'] ?? 1);
+
+// CSRF protection for state-changing requests
+if ($method === 'POST' || $method === 'PUT' || $method === 'DELETE' || $action !== '') {
+    csrf_protect($data);
+}
+
 
 // Standard helper to calculate cart count
 function getCartCount($pdo) {

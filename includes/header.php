@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/csrf.php';
 
 // Check "Remember Me" Cookie if user is not logged in
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
@@ -44,6 +45,8 @@ if (isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <!-- CSRF Token for AJAX requests -->
+    <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token()) ?>">
 </head>
 <body>
 

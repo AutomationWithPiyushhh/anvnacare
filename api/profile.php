@@ -2,6 +2,7 @@
 // API - User Profile Manager
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -55,6 +56,9 @@ try {
     
     // For modifying profile (PUT/POST)
     if ($method === 'POST' || $method === 'PUT' || isset($data['_method'])) {
+        // CSRF protection for state-changing requests
+        csrf_protect($data);
+
         $action = $data['action'] ?? 'update_profile';
 
         if ($action === 'update_profile') {

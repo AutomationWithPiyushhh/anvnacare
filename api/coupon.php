@@ -15,7 +15,7 @@ if (empty($code)) {
 try {
     $stmt = $pdo->prepare("SELECT * FROM coupons WHERE code = ? AND expiry_date >= CURRENT_DATE()");
     $stmt->execute([$code]);
-    $coupon = $coupon = $stmt->fetch();
+    $coupon = $stmt->fetch();
 
     if ($coupon) {
         if ($cartValue < (float)$coupon['min_cart_value']) {

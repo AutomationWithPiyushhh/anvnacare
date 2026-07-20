@@ -2,12 +2,14 @@
 // API - Wishlist Manager
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
     echo json_encode([
         'success' => false,
         'message' => 'Please login to manage your wishlist.',
@@ -29,6 +31,9 @@ $data = array_merge($_POST, $data);
 $action = $data['action'] ?? '';
 $itemId = (int)($data['item_id'] ?? 0);
 $itemType = $data['item_type'] ?? ''; // 'medicine', 'product'
+
+// CSRF protection
+csrf_protect($data);
 
 if (empty($action) || $itemId <= 0 || !in_array($itemType, ['medicine', 'product'])) {
     http_response_code(400);

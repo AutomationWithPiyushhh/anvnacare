@@ -2,6 +2,7 @@
 // API - Place Order
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/csrf.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -30,6 +31,10 @@ $addressId = (int)($data['address_id'] ?? 0);
 $paymentMethod = trim($data['payment_method'] ?? 'Card');
 $deliveryMethod = trim($data['delivery_method'] ?? 'Standard');
 $couponCode = trim($data['coupon_code'] ?? '');
+
+// CSRF protection
+csrf_protect($data);
+
 
 if ($addressId <= 0) {
     http_response_code(400);

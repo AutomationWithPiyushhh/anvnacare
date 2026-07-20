@@ -16,21 +16,23 @@ try {
     $addrStmt->execute([$userId]);
     $addresses = $addrStmt->fetchAll();
 
-    // Fetch Cart Items
-    $cartStmt = $pdo->prepare("SELECT c.item_type, c.item_id, c.quantity, m.name, m.discount_price, m.mrp, m.stock
+    // Fetch Cart Items — each branch explicitly filters its own item_type
+    $cartStmt = $pdo->prepare("
+        SELECT c.item_type, c.item_id, c.quantity, m.name, m.discount_price, m.mrp, m.stock
         FROM cart c
-        JOIN medicines m ON c.item_id = m.id AND c.item_type = 'medicine'
-        WHERE c.user_id = ?
-        UNION
+        JOIN medicines m ON c.item_id = m.id
+        WHERE c.user_id = ? AND c.item_type = 'medicine'
+        UNION ALL
         SELECT c.item_type, c.item_id, c.quantity, p.name, p.discount_price, p.mrp, p.stock
         FROM cart c
-        JOIN products p ON c.item_id = p.id AND c.item_type = 'product'
-        WHERE c.user_id = ?
-        UNION
-        SELECT c.item_type, c.item_id, c.quantity, t.name, t.discount_price, t.mrp, 999 as stock
+        JOIN products p ON c.item_id = p.id
+        WHERE c.user_id = ? AND c.item_type = 'product'
+        UNION ALL
+        SELECT c.item_type, c.item_id, c.quantity, t.name, t.discount_price, t.mrp, 999 AS stock
         FROM cart c
-        JOIN tests t ON c.item_id = t.id AND c.item_type = 'test'
-        WHERE c.user_id = ?");
+        JOIN tests t ON c.item_id = t.id
+        WHERE c.user_id = ? AND c.item_type = 'test'
+    ");
     $cartStmt->execute([$userId, $userId, $userId]);
     $cartItems = $cartStmt->fetchAll();
 
